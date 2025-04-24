@@ -9,6 +9,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -78,6 +79,27 @@ public class AsteroideService {
                 }
             }
 
+            // Filtro para que solo me de los 3 asteroides con mayor diametro en el impacto
+            if (resultado.size() > 3){
+                // Convierto el array a una lista
+                List<JsonNode> listaOrdenada = new ArrayList<>();
+                resultado.forEach(listaOrdenada::add);
+
+                listaOrdenada.sort((a, b) -> {
+                    double diametro1 = a.get("diametro").asDouble();
+                    double diametro2 = b.get("diametro").asDouble();
+                    // Los comparo asi para que el orden sea descendente y asi luego pueda seleccionar los tre primeros del array
+                    return Double.compare(diametro2, diametro1);
+                });
+
+                // Creo el array de solo 3
+                ArrayNode masGrandes = objectMapper.createArrayNode();
+                for (int i = 0; i<3; i++){
+                    masGrandes.add((JsonNode) listaOrdenada.get(i));
+                }
+
+                return masGrandes;
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
