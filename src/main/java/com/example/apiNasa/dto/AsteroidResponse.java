@@ -17,22 +17,26 @@ public class AsteroidResponse {
     }
 
     // Getters y setters
+    public String getNombre() {
+        return nombre;
+    }
 
-    public String getNombre() { return nombre; }
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
 
-    public double getDiameter() {
+    public double getDiametro() {
         return diametro;
     }
-    public void setDiameter(double diametro) {
+
+    public void setDiametro(double diametro) {
         this.diametro = diametro;
     }
 
     public String getVelocidad() {
         return velocidad;
     }
+
     public void setVelocidad(String velocidad) {
         this.velocidad = velocidad;
     }
@@ -40,6 +44,7 @@ public class AsteroidResponse {
     public String getFecha() {
         return fecha;
     }
+
     public void setFecha(String fecha) {
         this.fecha = fecha;
     }
