@@ -1,5 +1,6 @@
 package com.example.apiNasa.service;
 
+import com.example.apiNasa.dto.FotoResponse;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
@@ -11,28 +12,31 @@ public class FotoService {
     private static final String NASA_API_KEY = "DEMO_KEY";
     private static final String NASA_API_URL = "https://api.nasa.gov/planetary/apod";
 
-    public JsonNode obtenerFotoActual(){
-        // RestTemplate maneja las peticiones con la Api
-        RestTemplate restTemplate = new RestTemplate();
-        // ObjectMapper convierte la devolución de json a objeto o de objeto a json
-        ObjectMapper objectMapper = new ObjectMapper();
-
+    public FotoResponse obtenerFotoActual() {
         String url = construirUrldeHoy();
-
-        JsonNode foto = obtenerDatos(url);
-        return foto;
+        return obtenerDatos(url);
     }
 
-    private String construirUrldeHoy(){
+    private String construirUrldeHoy() {
+        // Corregimos el error en la construcción de la URL
         return NASA_API_URL + "?api_key=" + NASA_API_KEY;
     }
 
-    private JsonNode obtenerDatos(String url){
-        try{
+    private FotoResponse obtenerDatos(String url) {
+        try {
             RestTemplate restTemplate = new RestTemplate();
             String response = restTemplate.getForObject(url, String.class);
+
             ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readTree(response);
+            JsonNode jsonNode = objectMapper.readTree(response);
+
+            // Extraemos los campos que nos interesan
+            String fecha = jsonNode.get("date").asText();
+            String explicacion = jsonNode.get("explanation").asText();
+            String titulo = jsonNode.get("title").asText();
+            String imagenUrl = jsonNode.get("url").asText();
+
+            return new FotoResponse(fecha, explicacion, titulo, imagenUrl);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
